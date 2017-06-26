@@ -36,7 +36,7 @@ public final class QueryUtils {
     /**
      * Query the USGS dataset and return an {@link Post} object to represent a single earthquake.
      */
-    public static ArrayList<Post> fetchPosteData(String requestUrl) {
+    public static ArrayList<Post> fetchPostData(String requestUrl) {
 
         Log.v(LOG_TAG, "fetchEarthquakeData");
         // Create URL object
@@ -51,10 +51,7 @@ public final class QueryUtils {
         }
 
         // Extract relevant fields from the JSON response and create an {@link Event} object
-        ArrayList<Post> posts = extractFeatureArrayFromJson(jsonResponse);
-
-        // Return the {@link Event}
-        return posts;
+         return extractFeatureArrayFromJson(jsonResponse);
     }
 
     /**
