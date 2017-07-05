@@ -5,7 +5,12 @@ package com.boiseboise.redditslash;
  */
 
 public class Post {
-    String mTitle;
+    private String mTitle;
+    private String mThumbnailURL = null;
+    public static final int SELF_POST_ID = 0;
+    public static final int LINK_POST_ID = 1;
+    // Post type, where 0 = self post and 1 = link
+    private int postType = SELF_POST_ID;
 
     public Post(String title){
         mTitle = title;
@@ -13,5 +18,17 @@ public class Post {
 
     public String getTitle() {
         return mTitle;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
+    public void setPostType(int postType) {
+        this.postType = postType;
+    }
+
+    public int getPostType() {
+        return postType;
     }
 }

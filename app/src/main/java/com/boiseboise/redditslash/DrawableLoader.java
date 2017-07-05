@@ -2,24 +2,22 @@ package com.boiseboise.redditslash;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import java.util.List;
-
 /**
- * Created by Nick on 6/22/2017.
+ * Created by nicke on 6/30/2017.
  */
 
-public class PostLoader extends AsyncTaskLoader<List<Post>> {
+public class DrawableLoader extends AsyncTaskLoader<Drawable> {
 
     private String mUrl;
-    public static final String LOG_TAG = PostLoader.class.getName();
+    public static final String LOG_TAG = DrawableLoader.class.getName();
 
-    public PostLoader(Context context, String url) {
+
+    public DrawableLoader(Context context, String url) {
         super(context);
         mUrl = url;
-        Log.v(LOG_TAG, "PostLoader contructor");
-
     }
 
     @Override
@@ -29,14 +27,13 @@ public class PostLoader extends AsyncTaskLoader<List<Post>> {
     }
 
     @Override
-    public List<Post> loadInBackground() {
+    public Drawable loadInBackground() {
         Log.v(LOG_TAG, "loadInBackground");
         if(mUrl == null){
             return null;
         }
 
         // Perform the network request, parse the response, and extract a list of earthquakes.
-        return QueryUtils.fetchPostData(mUrl);
+        return QueryUtils.loadImageFromWeb(mUrl);
     }
 }
-

@@ -1,5 +1,6 @@
 package com.boiseboise.redditslash;
 
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -52,6 +53,16 @@ public final class QueryUtils {
 
         // Extract relevant fields from the JSON response and create an {@link Event} object
          return extractFeatureArrayFromJson(jsonResponse);
+    }
+
+    public static Drawable loadImageFromWeb(String url) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "src name");
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -145,25 +156,34 @@ public final class QueryUtils {
             // If there are results in the features array
             if (postDataArray.length() > 0) {
 
-                String title;
+                String title, thumbnailURL;
                 JSONObject currentPost;
 
                 // Create an empty ArrayList that we can start adding earthquakes to
                 ArrayList<Post> posts = new ArrayList<>();
+                Drawable d;
 
                 for(int i = 0; i < postDataArray.length(); i++) {
                     // Extract out the first feature (which is an earthquake)
                     currentPost = postDataArray.getJSONObject(i).getJSONObject("data");
                     title = currentPost.getString("title");
+                    // TODO: get rid of this try/catch because its super jank and will fail if there is a real JSONException
+                    try {
+                        thumbnailURL = currentPost
+                                .getString("thumbnail");
 
-                    posts.add(new Post(title));
+                        posts.add(new LinkPost(title, thumbnailURL, null));
+                    } catch (JSONException e1) {
+                        posts.add(new Post(title));
+
+                    }
                 }
 
-                // Create a new {@link Earthquake} object
+                // Create a new {@link post} object
                 return posts;
             }
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "Problem parsing the earthquake JSON results", e);
+            Log.e(LOG_TAG, "Problem parsing the post JSON results", e);
         }
         return null;
     }
