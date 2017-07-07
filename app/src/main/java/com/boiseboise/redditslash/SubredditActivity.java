@@ -7,6 +7,7 @@ import android.content.Loader;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
@@ -41,13 +42,16 @@ public class SubredditActivity extends AppCompatActivity {
         ListView postListView = (ListView) findViewById(R.id.list);
         postListView.setAdapter(mPostAdapter);
 
+        //Set the empty text view to the correct view
         mEmptyView = (TextView) findViewById(R.id.empty);
         postListView.setEmptyView(mEmptyView);
 
+        //Create connectivity manager for use in if below
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
+        //Check for internet connection
         if (activeNetwork != null && activeNetwork.isConnectedOrConnecting()) {
             // Get a reference to the LoaderManager, in order to interact with loaders.
             loaderManager = getLoaderManager();
@@ -60,17 +64,20 @@ public class SubredditActivity extends AppCompatActivity {
             View loadingIndicator = findViewById(R.id.loading_circle);
             loadingIndicator.setVisibility(View.GONE);
 
-            // Set empty state text to display "No earthquakes found."
+            // Set empty state text to display "No internet connection"
             mEmptyView.setText(R.string.no_internet);
         }
     }
-
+    /*
+    A Callback class for use in loading post information aside from images.
+     */
     public class PostLoaderCallback implements LoaderManager.LoaderCallbacks<List<Post>> {
 
         @Override
         public Loader<List<Post>> onCreateLoader(int i, Bundle bundle) {
             Log.v(LOG_TAG, "onCreateLoader");
             // Create a new loader for the given URL
+            //TODO: Replace SUBREDDIT_REQUEST_URL with the desired subreddit url
             return new PostLoader(SubredditActivity.this, SUBREDDIT_REQUEST_URL);
         }
 
@@ -93,9 +100,11 @@ public class SubredditActivity extends AppCompatActivity {
             }
 
             for(int i = 0; i < mPostAdapter.getCount(); i++){
-                if(mPostAdapter.getItem(i).getPostType() == Post.LINK_POST_ID){
+                if(mPostAdapter.getItem(i).getPostType() == Post.LINK_POST){
                     LinkPost currentPost = (LinkPost) mPostAdapter.getItem(i);
-                    loaderManager.initLoader(i+3, null, new DrawableLoaderCallback(currentPost));
+
+                    loaderManager.initLoader(i+3, null,
+                            new DrawableLoaderCallback(currentPost));
                 }
             }
         }
@@ -108,10 +117,18 @@ public class SubredditActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    A Callback class used for retrieving images from the web like thumbnail or content images
+     */
     public class DrawableLoaderCallback implements LoaderManager.LoaderCallbacks<Drawable> {
 
         private LinkPost mPost;
 
+        /**
+         * Contructor for the callback class
+         *
+         * @param post Object (LinkPost) reference for the post whose image is being fetched
+         */
         public DrawableLoaderCallback(LinkPost post) {
             super();
             mPost = post;
@@ -125,16 +142,20 @@ public class SubredditActivity extends AppCompatActivity {
 
         @Override
         public void onLoadFinished(Loader<Drawable> loader, Drawable drawable) {
+            //If a drawable is loaded successfully, set the thumbnail to the drawable
             if (drawable != null) {
                 mPost.setThumbnail(drawable);
             } else {
-                mPost.setThumbnail(getResources().getDrawable(R.drawable.ic_camera_alt_black_60dp));
+                //Otherwise use the default post thumbnail
+                mPost.setThumbnail(ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.ic_camera_alt_black_60dp, null));
             }
             mPostAdapter.notifyDataSetChanged();
         }
 
         @Override
         public void onLoaderReset(Loader<Drawable> loader) {
+
         }
     }
 

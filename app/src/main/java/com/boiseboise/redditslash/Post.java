@@ -7,10 +7,10 @@ package com.boiseboise.redditslash;
 public class Post {
     private String mTitle;
     private String mThumbnailURL = null;
-    public static final int SELF_POST_ID = 0;
-    public static final int LINK_POST_ID = 1;
+    public static final int SELF_POST = 0;
+    public static final int LINK_POST = 1;
     // Post type, where 0 = self post and 1 = link
-    private int postType = SELF_POST_ID;
+    private int postType = SELF_POST;
 
     public Post(String title){
         mTitle = title;

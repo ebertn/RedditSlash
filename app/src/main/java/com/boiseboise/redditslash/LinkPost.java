@@ -13,7 +13,7 @@ public class LinkPost extends Post {
 
     public LinkPost(String title, String thumbnailURL, Drawable thumbnail) {
         super(title);
-        setPostType(Post.LINK_POST_ID);
+        setPostType(Post.LINK_POST);
         mThumbnailURL = thumbnailURL;
         mThumbnail = thumbnail;
     }

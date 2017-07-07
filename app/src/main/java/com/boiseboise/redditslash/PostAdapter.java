@@ -55,7 +55,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
 
         ImageView thumbnail = (ImageView) listItemView.findViewById(R.id.thumbnail);
 
-        if (this.getItem(position).getPostType() == Post.LINK_POST_ID) {
+        if (this.getItem(position).getPostType() == Post.LINK_POST) {
             thumbnail.setImageDrawable(((LinkPost) currentPost).getThumbnail());
         } else {
             thumbnail.setImageResource(R.mipmap.ic_launcher);
